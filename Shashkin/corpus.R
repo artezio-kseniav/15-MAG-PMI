@@ -1,9 +1,19 @@
 require(WikipediR)
 require(dplyr)
 require(stringr)
+require(magrittr)
+require(purrr)
 
-dataset <- replicate(50, expr = random_page(language = "en", project = "wikinews", as_wikitext = TRUE, namespaces = "0") %$%
-                    parse %>% as_data_frame, simplify = FALSE) %>%
+system.time(
+  dataset <- replicate(5000, expr = try(random_page(domain = "en.wikinews.org",
+                                                   as_wikitext = TRUE,
+                                                   namespaces = "0")),
+                     simplify = FALSE)
+)
+
+
+
+%>%
     rbind_all %>%
   mutate(wikitext = unlist(wikitext, use.names = FALSE) %>% str_replace_all("[^[:print:]]"," "),
          categories = str_match_all(wikitext, "Category:([^\\]]*)") %>%

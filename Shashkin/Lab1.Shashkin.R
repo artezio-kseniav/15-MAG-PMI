@@ -3,7 +3,7 @@ sapply(c("magrittr","quanteda","Rtsne","slam","dplyr","ggplot2","stringr","fastc
 
 # Load and rename duplicate data
 
-setwd("~/Documents/Karpov/")
+setwd("~/15-MAG-PMI/Shashkin/")
 download.file("http://qwone.com/~jason/20Newsgroups/20news-18828.tar.gz", destfile = "20news-18828.tar.gz")
 untar("20news-18828.tar.gz")
 setwd("20news-18828/")
@@ -14,6 +14,8 @@ list.files(full.names = TRUE, recursive = TRUE) %>% {
 
 data <- textfile(list.files(full.names = TRUE, recursive = TRUE, pattern = "*.txt")) %>% corpus
 metadoc(data,"class") <- list.files(recursive = TRUE, include.dirs = TRUE, pattern = "*.txt") %>% dirname
+
+saveRDS(data, "../20newsgroups.RDS")
 
 # TFIDF document term matrix > cosine distance matrix > hclust ward clusters & tsne embeding
 
