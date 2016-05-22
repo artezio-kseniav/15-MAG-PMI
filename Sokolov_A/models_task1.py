@@ -3,43 +3,46 @@
 
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import TfidfVectorizer
-from pprint import pprint
-import numpy as np
+from sklearn.decomposition import TruncatedSVD
+from sklearn.cluster import KMeans
+
 import matplotlib.pyplot as plt
-
-
-def show_top10(classifier, vectorizer, categories):
-     feature_names = np.asarray(vectorizer.get_feature_names())
-     for i, category in enumerate(categories):
-         top10 = np.argsort(classifier.coef_[i])[-10:]
-         print("%s: %s" % (category, " ".join(feature_names[top10])))
-         
-         
-         
+import numpy as np
+                
 newsgroups = fetch_20newsgroups()         
-newsgroups_train = fetch_20newsgroups(subset='train')
-newsgroups_test = fetch_20newsgroups(subset='test')
 
-#pprint(list(newsgroups_train.target_names))
-#pprint(list(newsgroups_test.target_names))
+tf_vect = TfidfVectorizer(min_df=3, max_df=.95, stop_words='english')
+word_freq = tf_vect.fit_transform(newsgroups.data)
 
-vectorizer = TfidfVectorizer()
-vectors_train = vectorizer.fit_transform(newsgroups_train.data)
-vectors_test = vectorizer.transform(newsgroups_test.data)
+lsa = TruncatedSVD(n_components=10)
+km = KMeans(n_clusters=3)
+word_freq = tf_vect.fit_transform(newsgroups.data)
+word_freq_lsa = lsa.fit_transform(word_freq)
+km.fit(word_freq_lsa)
 
-pprint("Train data size:")
-pprint(vectors_train.shape)
+print(word_freq.shape)
+print(lsa.components_.shape)
+print(km.cluster_centers_.shape)
+weights = np.dot(km.cluster_centers_, lsa.components_)
+print(weights.shape)
 
-pprint("Test data size:")
-pprint(vectors_test.shape)
-print("---------------------------------")
+features = tf_vect.get_feature_names()
+weights = np.abs(weights)
+
+for i in range(km.n_clusters):
+  top5 = np.argsort(weights[i])[-5:]
+#  print top5
+  print(zip([features[j] for j in top5], weights[i, top5]))
 
 
-clf = MultinomialNB(alpha=.01)
-clf.fit(vectors_train, newsgroups_train.target)
-pred = clf.predict(vectors_test)
-
-show_top10(clf, vectorizer, newsgroups_train.target_names)
-
-
-
+plt.figure()
+colors = ['red', 'green', 'blue']
+centroids = km.cluster_centers_
+plt.scatter(centroids[:, 0], centroids[:, 1],
+            marker='x', s=100, linewidths=3,c=colors)
+#plt.title('K-means clustering on the digits dataset (PCA-reduced data)\n')
+#for i, ((x,y), kls) in enumerate(zip(values, 3)):
+#    plt.annotate(str(i), xy=(x,y), xytext=(0,0), textcoords='offset points',
+#                 color=colors[kls])
+plt.show()  
+      
