@@ -27,3 +27,7 @@ for category in cnn_paper.category_urls():
     topics_file.write(category)
 
 print(number_of_articles)
+
+file.close()
+url_file.close()
+topics_file.close()
