@@ -43,11 +43,11 @@ process_text <- function(x, topic) {
   lapply(clean_sentences, get_3grams, topic = topic) %>% unlist
 }
 
-three_grams_politics <- lapply(df_politics, process_text, topic = "politics") %>% 
+three_grams_politics <- lapply(df_politics$texts, process_text, topic = "politics") %>% 
   unlist %>% 
   gsub(pattern = "\\s+", repl = " ", str_trim(.))
 
-three_grams_economics <- lapply(df_economics, process_text, topic = "economics") %>% 
+three_grams_economics <- lapply(df_economics$texts, process_text, topic = "economics") %>% 
   unlist %>% 
   gsub(pattern = "\\s+", repl = " ", str_trim(.))
 
