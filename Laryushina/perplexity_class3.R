@@ -51,24 +51,24 @@ three_grams_economics <- lapply(df_economics$texts, process_text, topic = "econo
   unlist %>% 
   gsub(pattern = "\\s+", repl = " ", str_trim(.))
 
-perplexity <- function(x, topic) {
-  model <- readRDS("/home/jule/labs/karpov/3grams.RDS")
-  log_sum = lapply(x, function(x) log2(model$prob[model$three_grams == x]))  %>% 
-    unlist  %>% 
-    sum
+model <- readRDS("/home/jule/labs/karpov/3grams.RDS")
+
+politics_dictionary <- as.data.frame(table(three_grams_politics))
+colnames(politics_dictionary) <- c("three_grams", "freq")
+politics_dictionary <- merge(politics_dictionary, model, by = "three_grams")
+
+economics_dictionary <- as.data.frame(table(three_grams_economics))
+colnames(economics_dictionary) <- c("three_grams", "freq")
+economics_dictionary <- merge(economics_dictionary, model, by = "three_grams")
+
+perplexity <- function(x, topic, model) {
+  log_sum = log2(x$prob) * x$freq
   words_count = sum(read_tsv(paste0("/home/jule/labs/karpov/words", topic,".txt")))
-  l <- log_sum/words_count
+  l <- sum(log_sum)/words_count
   2^(-l)
 }
 
-politics_perplexity <- perplexity(three_grams_politics, topic = "politics")
-economics_perplexity <- perplexity(three_grams_politics, topic = "economics")
+politics_perplexity <- perplexity(politics_dictionary, topic = "politics", model)
+economics_perplexity <- perplexity(economics_dictionary, topic = "economics", model)
 
-save("politics_perplexity", "economics_perplexity", file = "/home/jule/labs/karpov/perplexity.RData")
-
-#additionally
-#3 gram model for politics
-politics_dictionary <- as.data.frame(table(three_grams_politics))
-colnames(politics_dictionary) <- c("three_grams", "prob")
-politics_dictionary$prob <- politics_dictionary$prob/sum(politics_dictionary$prob)
-head(politics_dictionary)
+save(politics_perplexity, economics_perplexity, file = "/home/jule/labs/karpov/perplexity.RData")
