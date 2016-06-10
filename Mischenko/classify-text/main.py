@@ -70,7 +70,7 @@ def main_test(path = None):
 
 	remove_incompatible_files(dir_path)
 
-	print '\n\n'
+	print ('\n\n')
 
 	# load data
 	print colored('Loading files into memory', 'green', attrs=['bold'])
@@ -90,7 +90,7 @@ def main_test(path = None):
 	X = tf_transformer.transform(word_counts)
 
 
-	print '\n\n'
+	print ('\n\n')
 
 	# create classifier
 	# clf = sklearn.naive_bayes.MultinomialNB()
@@ -101,7 +101,7 @@ def main_test(path = None):
 	clf = sklearn.neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
 
 	# test the classifier
-	print '\n\n'
+	print ('\n\n')
 	print colored('Testing classifier with train-test split', 'magenta', attrs=['bold'])
 	test_classifier(X, files.target, clf, test_size=0.2, y_names=files.target_names, confusion=False)
 
