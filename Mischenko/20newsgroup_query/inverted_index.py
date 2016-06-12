@@ -75,7 +75,7 @@ def traverse_syntax_tree(tree, iindex):
     elif isinstance(tree.op, _ast.And):
         return set(doc_ids[0]) & set(doc_ids[1])
     else:
-        print 'Not a supported boolean operator'
+        print ("Not a supported boolean operator")
         raise Exception
 
 
