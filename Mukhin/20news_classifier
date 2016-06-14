@@ -1,0 +1,37 @@
+import numpy as np
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import TfidfVectorizer
+from pprint import pprint
+import re
+import time
+from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import normalize
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import cross_validation as cv
+from sklearn.metrics import classification_report
+newsgroups = fetch_20newsgroups(categories=['alt.atheism','soc.religion.christian','talk.religion.misc', 'sci.space'], shuffle=True, random_state=1)
+pprint(list(newsgroups.target_names))
+
+vectorizer = TfidfVectorizer(stop_words='english', use_idf=True,
+                             max_df=0.8, max_features=200000)
+X = vectorizer.fit_transform(newsgroups.data)
+labels = newsgroups.target
+text = newsgroups.data
+
+svd = TruncatedSVD(n_components = 3)
+th = svd.fit_transform(X)
+ph = svd.components_
+print(th.shape)
+print(ph.shape)
+print(X.shape)
+
+print('-------')
+ph = normalize(ph)
+th = normalize(th)
+
+X_train, X_test, y_train, y_test = cv.train_test_split(th,labels, test_size=0.3, random_state=41)
+
+gbt = GradientBoostingClassifier(n_estimators = 1)
+gbt.fit(X_train, y_train)
+y = gbt.predict(X_test)
+print(classification_report(y, y_test))
