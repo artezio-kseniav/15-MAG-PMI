@@ -26,3 +26,13 @@ corpus %<>%
 
 # 2 hours ~= 20k documents ~= 20Mb
 saveRDS(corpus, "wikinews.RDS")
+
+corpus %<>%
+  str_replace_all("\\[{2}(Category|File|Image|User|Portal):[^\\]{2}]*\\]{2}", " ") %>%
+  str_replace_all("\\[{2}([^\\||\\]{2}|:]*)\\]{2}"," \\1 ") %>%
+  str_replace_all("\\{{2}([^\\||\\}{2}|:]*)\\}{2}"," \\1 ") %>%
+  str_replace_all("\\|([^\\||\\]{2}]+)\\]{2}", "\\]\\] \\1 ") %>%
+  str_replace_all("\\[{2}[^\\]{2}]*\\]{2}", " ") %>%
+  str_replace_all("\\{{2}[^\\}{2}]*\\}{2}", " ")
+
+
