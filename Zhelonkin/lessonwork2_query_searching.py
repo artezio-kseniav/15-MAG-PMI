@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
-# Written by Sokolov Artem and Zhelonkin Dmitry
+# Written by Sokolov Artem, Zhelonkin Dmitry
+
+# good examples: jesus christ, super computer
 
 import numpy as np
 import scipy
@@ -52,8 +54,9 @@ skl_tfidf_comparisons = []
 
 for count_0, doc_0 in enumerate(sklearn_representation.toarray()):
     for count_1, doc_1 in enumerate(tfidf_query.toarray()):
-        skl_tfidf_comparisons.append((cosine_similarity(doc_0, doc_1), newsgroups_dataset.data[count_0].split("\n")[1]))
+        skl_tfidf_comparisons.append((cosine_similarity(doc_0, doc_1), newsgroups_dataset.data[count_0].split("\n")[1],
+                                      newsgroups_dataset.target[count_0]))
 
 for x in sorted(skl_tfidf_comparisons, reverse = True)[:10]:
-    print (x)
+    print ("sim:", x[0], "\t| ", x[1], "\t| ", newsgroups_dataset.target_names[x[2]])
 

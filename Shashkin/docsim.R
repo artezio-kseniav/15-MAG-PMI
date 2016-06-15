@@ -1,4 +1,4 @@
-sapply(c("magrittr","quanteda","slam","dplyr"), require, character.only = TRUE)
+sapply(c("magrittr","quanteda","slam","dplyr","DT"), require, character.only = TRUE)
 
 setwd("~/15-MAG-PMI/Shashkin/")
 
@@ -21,17 +21,19 @@ cos_sim <- dtm %>% weight("tfidf") %>% convert("tm") %>% t %>% sparse_cosine
 
 # BM25
 
-bm25 <- function(dtm, query, k = 1.5, b = 0.5) {
+bm25 <- function(dtm, query, k = 1.6, b = 0.75) {
   f <- dtm[,which(as.vector(dtm[query,]) > 0)]
   n <- row_sums(dtm) %>% {k * (1 - b + b * . / mean(.))} %>% as.vector
   idf <- (col_sums(f > 0) + 0.5) %>% {log((dtm$nrow - .)/.)}
 
   (f * (k + 1) /
-    (colapply_simple_triplet_matrix(f, FUN = . %>% `+`(n)) %>% rbind_list %>% as.simple_triplet_matrix)
-  ) %>% rowapply_simple_triplet_matrix(FUN = . %>% `*`(idf)) %>% sapply(sum, USE.NAMES = FALSE)
+    (colapply_simple_triplet_matrix(f, FUN = `+`, n) %>% rbind_list %>% as.simple_triplet_matrix)
+  ) %>% rowapply_simple_triplet_matrix(FUN = `*`, idf) %>% sapply(sum, USE.NAMES = FALSE)
 }
 
 bm_sim <- bm25(dtm %>% tf %>% convert("tm"), ndoc(corpus))
 
-corpus$documents$texts[order(cos_sim[ndoc(corpus),], decreasing = TRUE)[1:10]]
-corpus$documents$texts[order(bm_sim, decreasing = TRUE)[1:10]]
+data_frame(tfidf = corpus$documents$texts[order(cos_sim[ndoc(corpus),], decreasing = TRUE)[1:10]],
+           bm25 = corpus$documents$texts[order(bm_sim, decreasing = TRUE)[1:10]]) %>%
+  datatable(caption = corpus$documents$texts[ndoc(corpus)]) %>%
+  saveWidget('docsim_search_results.html')

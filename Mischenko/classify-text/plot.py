@@ -91,8 +91,8 @@ def SVM(path):
 	plot_results(i, [BOW_results, TF_results, TFIDF_results], ['BOW', 'TF', 'TFIDF'])
 
 def NB(path):
-	print "Classifier: Naive Bayes"
-	print "Train-Test Split"
+	print ("Classifier: Naive Bayes")
+	print ("Train-Test Split")
 
 	# preprocess
 	main.reorganize_dataset(path)
@@ -129,7 +129,7 @@ def NB(path):
 def split_test_classifier(clf, X, y):
 	results = []
 	i_ = []
-	print '================='
+	print ('=================')
 	for i in range(1, 100):
 		print i
 		i_.append(i)
@@ -151,8 +151,8 @@ def split_test_classifier(clf, X, y):
 	return i_, results
 
 def KNN_parameter(path):
-	print "Classifier: K Nearest Neighbors"
-	print "KFOLD parameter test"
+	print ("Classifier: K Nearest Neighbors")
+	print ("KFOLD parameter test")
 
 	# preprocess
 	main.reorganize_dataset(path)
