@@ -9,7 +9,7 @@ if __name__ == "__main__":
 	
 	corpus=[]
 	for doc in tokenized:
-    lemms = []
+    	lemms = []
 		for word in doc:
 			if word not in string.punctuation:
 				lemms.append(word.lower())
