@@ -1,4 +1,3 @@
-
 import io
 import nltk
 import math
@@ -7,7 +6,6 @@ from collections import defaultdict
 import lxml.html as html
 import re
 import time
-
 
 topics = ['politics', 'sport']
 news_url = {'http://izvestia.ru/archive/15?type=1&p=':'politics',  'http://izvestia.ru/archive/21?type=1&p=':'sport'}
@@ -23,7 +21,7 @@ for url in news_url:
             href = page_url.get('href')
             news_urls[news_url[url]].append(basic_url + href)
 
-print(len(news_urls['politics']))
+#print(len(news_urls['politics']))
 print(len(news_urls['sport']))
 
 news_corpus = defaultdict(list)
@@ -40,7 +38,7 @@ for topic in topics:
         count += 1
         #print("Topic: %s Parsing progress: %d out of %d " % (topic, count, len(news_urls[topic])), end = '\r' )
 
-print(len(news_corpus['politics']))
+#print(len(news_corpus['politics']))
 print(len(news_corpus['sport']))
 
 
