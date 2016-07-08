@@ -45,14 +45,11 @@ news_model.similarity('car', 'motorcycle')
 
 news_model.similarity('baseball', 'hockey')
 
-news_model.similarity('ball', 'puck')
-
 news_model.doesnt_match(['car', 'motorcycle', 'bicycle'])
 
 news_model.doesnt_match(['baseball', 'hockey', 'telephone', 'basketball', 'athletics'])
 
 news_model.doesnt_match(['earth', 'jupyter', 'mars', 'sun'])
-
 
 news_model.most_similar(positive=['man', 'crown'])
 
